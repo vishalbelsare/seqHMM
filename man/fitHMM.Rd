@@ -154,18 +154,18 @@ HMM2$logLik # -5507.003
 
 # Only LBFGS
 HMM3 <- fitHMM(bHMM, em_step = FALSE, global_step = FALSE, local_step = TRUE)
-HMM3$logLik #-5493.271
+HMM3$logLik # -5492.735
 
 # Global optimization via MLSL_LDS with LBFGS as local optimizer and final polisher
 HMM4 <- fitHMM(bHMM, em_step = FALSE, global_step = TRUE, local_step = TRUE,
   global_control = list(maxeval = 3000, maxtime = 0))
-HMM4$logLik #-5403.383
+HMM4$logLik # -5403.383
 
 # As previously, but now we use five iterations from EM algorithm for defining initial values and boundaries
 # Note smaller maxeval for global optimization
 HMM5 <- fitHMM(bHMM, em_step = TRUE, global_step = TRUE, local_step = TRUE,
   em_control = list(maxeval = 5), global_control = list(maxeval = 750, maxtime = 0))
-HMM5$logLik #-5403.383
+HMM5$logLik # -5403.383
 
 }
 }

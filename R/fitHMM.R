@@ -274,7 +274,7 @@ fitHMM<-function(model, em_step = FALSE, global_step = TRUE, local_step = TRUE,
           model$initialProbs[paramIP]<-pars[npTM+npEM+1:npIP]
           model$initialProbs[]<-model$initialProbs/sum(model$initialProbs)
         } 
-        
+        save(model,pars,file="../model.rda")
         if(estimate){
           if(soft){
             - sum(logLikHMM(model$transitionMatrix, cbind(model$emissionMatrix,1), model$initialProbs, obsArray))
@@ -422,17 +422,17 @@ fitHMM<-function(model, em_step = FALSE, global_step = TRUE, local_step = TRUE,
         } 
         
         - gradientMC(model$transitionMatrix, emissionArray, model$initialProbs, obsArray,
-          rowSumsA,rowSumsB,sumInit, transNZ, emissNZ, initNZ, exp(pars))
-        
+          rowSumsA,rowSumsB,sumInit, transNZ, emissNZ, initNZ, model$numberOfSymbols)
       }
     }
-    
     if(missing(ub)){
-      ub <- pmax(1e15,10*initialvalues)
+      ub <- rep(10, length(initialvalues))
+    } else {
+      if(length(ub) == 1){
+        ub <- rep(ub, length(initialvalues))
+      }
     }
     if(global_step){
-      
-      
       
       if(is.null(global_control$maxeval)){
         global_control$maxeval <- 10000
@@ -444,11 +444,11 @@ fitHMM<-function(model, em_step = FALSE, global_step = TRUE, local_step = TRUE,
         global_control$algorithm <- "NLOPT_GD_MLSL_LDS"
         global_control$local_opts <- list(algorithm = "NLOPT_LD_LBFGS",  xtol_rel = 1e-4)
         global_control$ranseed <- 123
-        global_control$population <- 4*length(initialvalues)
+        global_control$population <- 5*length(initialvalues)
       }
       
       globalres <- nloptr(x0 = initialvalues, eval_f = likfn, eval_grad_f = gradfn, 
-        lb = rep(0,length(initialvalues)), ub = ub,
+        lb = rep(1e-8,length(initialvalues)), ub = ub,
         opts = global_control, model = model, estimate = TRUE, ...)
       initialvalues <- globalres$solution
       model <- likfn(globalres$solution, model, FALSE)
@@ -466,15 +466,15 @@ fitHMM<-function(model, em_step = FALSE, global_step = TRUE, local_step = TRUE,
         local_control$algorithm <- "NLOPT_LD_LBFGS"
         local_control$xtol_rel <- 1e-8
       }
-      browser()
       localres<-nloptr(x0 = initialvalues, 
         eval_f = likfn, eval_grad_f = gradfn,
-        opts = local_control, model = model, estimate = TRUE, lb = rep(0,length(initialvalues)), ub = ub, ...)
+        opts = local_control, model = model, estimate = TRUE, 
+        lb = rep(0,length(initialvalues)), ub = ub, ...)
       model <- likfn(localres$solution,model, FALSE)
       ll <- -localres$objective
     } else localres <- NULL
     
-    
+ 
   } else globalres <- localres <- NULL
   
   list(model = model, logLik = ll, 

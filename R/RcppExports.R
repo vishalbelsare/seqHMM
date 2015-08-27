@@ -45,8 +45,8 @@ gradient <- function(transitionMatrix, emissionArray, initialProbs, obsArray, ro
     .Call('seqHMM_gradient', PACKAGE = 'seqHMM', transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB, sumInit, transNZ, emissNZ, initNZ, expPsi)
 }
 
-gradientMC <- function(transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, expPsi) {
-    .Call('seqHMM_gradientMC', PACKAGE = 'seqHMM', transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, expPsi)
+gradientMC <- function(transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, nSymbols) {
+    .Call('seqHMM_gradientMC', PACKAGE = 'seqHMM', transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, nSymbols)
 }
 
 gradientMCx <- function(transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, expPsi, coefs, X_, numberOfStates) {

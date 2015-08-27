@@ -194,8 +194,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // gradientMC
-NumericVector gradientMC(NumericVector transitionMatrix, NumericVector emissionArray, NumericVector initialProbs, IntegerVector obsArray, NumericVector rowSumsA, NumericVector rowSumsB_, double sumInit, IntegerVector transNZ, IntegerVector emissNZ, IntegerVector initNZ, NumericVector expPsi);
-RcppExport SEXP seqHMM_gradientMC(SEXP transitionMatrixSEXP, SEXP emissionArraySEXP, SEXP initialProbsSEXP, SEXP obsArraySEXP, SEXP rowSumsASEXP, SEXP rowSumsB_SEXP, SEXP sumInitSEXP, SEXP transNZSEXP, SEXP emissNZSEXP, SEXP initNZSEXP, SEXP expPsiSEXP) {
+NumericVector gradientMC(NumericVector transitionMatrix, NumericVector emissionArray, NumericVector initialProbs, IntegerVector obsArray, NumericVector rowSumsA, NumericVector rowSumsB_, double sumInit, IntegerVector transNZ, IntegerVector emissNZ, IntegerVector initNZ, IntegerVector nSymbols);
+RcppExport SEXP seqHMM_gradientMC(SEXP transitionMatrixSEXP, SEXP emissionArraySEXP, SEXP initialProbsSEXP, SEXP obsArraySEXP, SEXP rowSumsASEXP, SEXP rowSumsB_SEXP, SEXP sumInitSEXP, SEXP transNZSEXP, SEXP emissNZSEXP, SEXP initNZSEXP, SEXP nSymbolsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -209,8 +209,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type transNZ(transNZSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type emissNZ(emissNZSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type initNZ(initNZSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type expPsi(expPsiSEXP);
-    __result = Rcpp::wrap(gradientMC(transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, expPsi));
+    Rcpp::traits::input_parameter< IntegerVector >::type nSymbols(nSymbolsSEXP);
+    __result = Rcpp::wrap(gradientMC(transitionMatrix, emissionArray, initialProbs, obsArray, rowSumsA, rowSumsB_, sumInit, transNZ, emissNZ, initNZ, nSymbols));
     return __result;
 END_RCPP
 }
