@@ -1,6 +1,29 @@
-seqHMM 1.2.1 (Release date: )
+seqHMM 1.2.4 (Release date: 2023-01-09)
 ==============
+ * Fixed the issue with the initial transition matrix construction in build_mm 
+   when there is a symbol which is only present in last time points.
+ * Related to above, if a state x with no transitions from is encountered during 
+   the EM algorithm, the corresponding row of the transition matrix A is then 
+   normalized so that is such a A[x,x]=1 i.e. the state is set as absorbing.
+ 
+seqHMM 1.2.3 (Release date: 2022-12-13)
+==============
+ * Changed the internal seqplot axes argument to xaxis as axes is now 
+   deprecated in TraMineR.
+   
+seqHMM 1.2.2 (Release date: 2022-12-01)
+==============
+* Fixed the handling of models with more than 200 symbols in mc_to_sc, 
+  mc_to_sc_data, and plotting functions.
+* Removed duplicate xaxis argument in interal SSPlotter function.
+  
+seqHMM 1.2.1-1 (Release date: 2022-05-24)
+==============
+* Added argument respect_void to hidden_paths function leading to the 
+  propagation of void values of observed sequences to the hidden state sequences.
 * Fixed the scaling of initial probabilities to 1 in build_mm.
+* Fixed the computation of the initial state probability vector for Markov 
+  models in case of missing data.
 
 seqHMM 1.2.0 (Release date: 2021-10-18)
 ==============

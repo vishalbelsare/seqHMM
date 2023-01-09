@@ -148,6 +148,9 @@
 #' @param cex.axis Expansion factor for setting the size of the font for the x-axis
 #'   tick labels. The default value is 1. Values lesser than 1 will reduce the size of
 #'   the font, values greater than 1 will increase the size.
+#' @param respect_void  If \code{TRUE} (default), states at the time points 
+#' corresponding to TraMineR's void in the observed sequences are set to void 
+#' in the hidden state sequences as well.
 #' 
 #' @param ... Other arguments to be passed on to
 #'   \code{\link[TraMineR]{seqplot}}.
@@ -184,7 +187,7 @@ mssplot <- function(x, ask = FALSE, which.plots = NULL, hidden.paths = NULL,
   xaxis = TRUE, xlab = NA, xtlab = NULL, xlab.pos = 1,
   ylab = "auto", hidden.states.title = "Hidden states",
   yaxis = FALSE, ylab.pos = "auto",
-  cex.lab = 1, cex.axis = 1, ...){
+  cex.lab = 1, cex.axis = 1, respect_void = TRUE, ...){
   
   check_deprecated_args(match.call())
   
@@ -230,7 +233,7 @@ mssplot <- function(x, ask = FALSE, which.plots = NULL, hidden.paths = NULL,
   }
 
   if(is.null(hidden.paths)){
-    hidden.paths <- suppressWarnings(suppressMessages(hidden_paths(x)))
+    hidden.paths <- suppressWarnings(suppressMessages(hidden_paths(x, respect_void = respect_void)))
   }
 
   if(!("hidden.states.labels" %in% names(args))){
@@ -242,22 +245,23 @@ mssplot <- function(x, ask = FALSE, which.plots = NULL, hidden.paths = NULL,
     hidden.pathslabs[[i]] <- hidden.states.labels[(k+1):(k+x$n_states[i])]
     k <- k+x$n_states[i]
   }
-
-  if(!("hidden.states.colors" %in% names(args))){
-    if (length(alphabet(hidden.paths)) <= 200) {
-      hidden.states.colors <- seqHMM::colorpalette[[length(alphabet(hidden.paths))]]
+  
+  n_alphabet <- length(alphabet(hidden.paths))
+  if (!("hidden.states.colors" %in% names(args))) {
+    if (n_alphabet <= 200) {
+      hidden.states.colors <- seqHMM::colorpalette[[n_alphabet]]
     } else {
-      cp <- NULL
-      k <- 200
-      p <- 0
-      while(length(alphabet(hidden.paths)) - p > 0){
-        cp <- c(cp, seqHMM::colorpalette[[k]])
-        p <- p + k
-        k <- k - 1
-      }
-      cpal <- cp[1:length(alphabet(hidden.paths))]
+      stop("Model contains ", n_alphabet, " hidden states, which ", 
+           " is more than supported by the default color palette. Specify your ", 
+           " own color palette with the argument 'hidden.states.colors'.")
     }
   }
+  if(n_alphabet != length(hidden.states.colors)) {
+    stop("The number of hidden states is ", n_alphabet, 
+         " but the supplied color palette contains only ", 
+         length(hidden.states.colors), "colours.")
+  }
+
   hidden.pathscols <- list()
   k <- 0
   for(i in 1:x$n_clusters){

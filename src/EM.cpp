@@ -20,7 +20,7 @@ Rcpp::List EM(const arma::mat& transition_, const arma::cube& emission_, const a
   int iter = 0;
   double sumlogLik_new = 0;
   double sumlogLik = -1e150; //sum(ll);
-  while ((change > tol) & (iter < itermax)) {
+  while ((change > tol) && (iter < itermax)) {
     iter++;
     
     arma::mat ksii(emission.n_rows, emission.n_rows, arma::fill::zeros);
@@ -119,7 +119,13 @@ Rcpp::List EM(const arma::mat& transition_, const arma::cube& emission_, const a
       }
       if (change > tol) {
         if (obs.n_cols > 1) {
-          ksii.each_col() /= sum(ksii, 1);
+          arma::vec rsums = sum(ksii, 1);
+          for (unsigned int kk = 0; kk < ksii.n_rows; kk++) {
+            if (rsums(kk) == 0) {
+              rsums(kk) = 1;
+            }
+          }
+          ksii.each_col() /= rsums;
           transition = ksii;
         }
         for (unsigned int r = 0; r < emission.n_slices; r++) {
